@@ -10,7 +10,7 @@ import (
 
 const (
 	size   = 12
-	digits = "abcdefghijklmnopqrstuvwxyz0123456789"
+	digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
 var (
