@@ -24,7 +24,7 @@ func (u UID) Bytes() []byte {
 	return u[:]
 }
 
-func (u UID) HasEmpty() bool {
+func (u UID) IsEmpty() bool {
 	return bytes.Equal(u[:], []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 }
 
