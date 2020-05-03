@@ -1,6 +1,7 @@
 package uid
 
 import (
+	"bytes"
 	"crypto/rand"
 	"database/sql/driver"
 	"encoding/binary"
@@ -23,7 +24,14 @@ func (u UID) Bytes() []byte {
 	return u[:]
 }
 
+func (u UID) HasEmpty() bool {
+	return bytes.Equal(u[:], []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
+}
+
 func (u UID) String() string {
+	if bytes.Equal(u[:], []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}) {
+		return ""
+	}
 	return string(u[:])
 }
 
