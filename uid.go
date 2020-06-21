@@ -6,6 +6,7 @@ import (
 	"database/sql/driver"
 	"encoding/binary"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -114,7 +115,7 @@ func (u *UID) generate() {
 
 func FromString(input string) (UID, error) {
 	u := UID{}
-	err := u.UnmarshalText([]byte(input))
+	err := u.UnmarshalText([]byte(strings.ToUpper(input)))
 	return u, err
 }
 
