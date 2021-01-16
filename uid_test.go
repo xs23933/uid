@@ -14,11 +14,26 @@ type Tx struct {
 type x []byte
 
 func Test_uid(t *testing.T) {
-	b := make([]UID, 0)
-	for i := 0; i < 100; i++ {
-		b = append(b, New())
+	b := make(map[string]struct{}, 0)
+	for i := 0; i < 30000000; i++ {
+		id := New()
+		_, ok := b[id.String()]
+		if ok {
+			t.Errorf("重复id %s\n", id.String())
+			continue
+		}
+		b[id.String()] = struct{}{}
 	}
-	fmt.Printf("%v\n", b)
+	fmt.Printf("%v\n", len(b))
+	i := 0
+	for k := range b {
+		if i > 100 {
+			return
+		}
+		t.Error(k)
+		i++
+	}
+	t.Error("")
 }
 
 func Test_parse(t *testing.T) {

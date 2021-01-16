@@ -16,19 +16,24 @@ const (
 )
 
 var (
+	// Nil Null
 	Nil = UID{}
 )
 
+// UID UID
 type UID [size]byte
 
+// Bytes out bytes
 func (u UID) Bytes() []byte {
 	return u[:]
 }
 
+// IsEmpty check is Empty
 func (u UID) IsEmpty() bool {
 	return bytes.Equal(u[:], []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 }
 
+// String out string
 func (u UID) String() string {
 	if bytes.Equal(u[:], []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}) {
 		return ""
@@ -36,30 +41,28 @@ func (u UID) String() string {
 	return string(u[:])
 }
 
+// Value driver.sql
 func (u UID) Value() (driver.Value, error) {
 	return u.String(), nil
 }
 
-func Must(u UID, err error) UID {
-	if err != nil {
-		panic(err)
-	}
-	return u
-}
-
+// MarshalText MarshalText interface
 func (u UID) MarshalText() ([]byte, error) {
 	return []byte(u.String()), nil
 }
 
+// UnmarshalText UnmarshalText interface
 func (u *UID) UnmarshalText(text []byte) error {
 	copy(u[:], []byte(text))
 	return nil
 }
 
+// MarshalBinary MarshalBinary interface
 func (u UID) MarshalBinary() ([]byte, error) {
 	return u.Bytes(), nil
 }
 
+// UnmarshalBinary UnmarshalBinary interface
 func (u *UID) UnmarshalBinary(data []byte) error {
 	if len(data) != size {
 		return fmt.Errorf("uuid: UUID must be exactly 16 bytes long, got %d bytes", len(data))
@@ -69,6 +72,12 @@ func (u *UID) UnmarshalBinary(data []byte) error {
 	return nil
 }
 
+// GormDataType schema.Field DataType
+func (UID) GormDataType() string {
+	return "char(12)"
+}
+
+// Scan driver.Scaner
 func (u *UID) Scan(src interface{}) error {
 	switch src := src.(type) {
 	case UID:
@@ -85,12 +94,13 @@ func (u *UID) Scan(src interface{}) error {
 	return fmt.Errorf("uid: cannot convert %T to UID", src)
 }
 
+// generate build uid
 func (u *UID) generate() {
 	buf := make([]byte, 10)
 	rand.Read(buf)
 	seed := binary.BigEndian.Uint64(buf[:8])
 	pre := uint64(binary.BigEndian.Uint16(buf[8:]))
-	src := (uint64(time.Now().UnixNano()) - seed) / 5
+	src := (uint64(time.Now().UnixNano()) - seed) / 3
 	var a [64 + 1]byte
 	i := len(a)
 	l := uint64(len(digits))
@@ -113,12 +123,14 @@ func (u *UID) generate() {
 	copy(u[:], a[i:])
 }
 
+// FromString parse string
 func FromString(input string) (UID, error) {
 	u := UID{}
 	err := u.UnmarshalText([]byte(strings.ToUpper(input)))
 	return u, err
 }
 
+// New build uid
 func New() UID {
 	u := new(UID)
 	u.generate()
