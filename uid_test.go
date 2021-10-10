@@ -45,3 +45,15 @@ func Test_parse(t *testing.T) {
 	}
 	fmt.Printf("%v", x)
 }
+
+func Test_fromstring(t *testing.T) {
+	buf := []byte("abcdefg12345")
+	uid := UID{}
+	err := uid.UnmarshalBinary(buf)
+	// uid, err := FromString(buf)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Printf("%s", uid)
+	t.Error("")
+}

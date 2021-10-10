@@ -53,6 +53,9 @@ func (u UID) MarshalText() ([]byte, error) {
 
 // UnmarshalText UnmarshalText interface
 func (u *UID) UnmarshalText(text []byte) error {
+	if len(text) != size {
+		return fmt.Errorf("uid: UID must be exactly 12 bytes long, got %d bytes", len(text))
+	}
 	copy(u[:], []byte(text))
 	return nil
 }
@@ -65,7 +68,7 @@ func (u UID) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary UnmarshalBinary interface
 func (u *UID) UnmarshalBinary(data []byte) error {
 	if len(data) != size {
-		return fmt.Errorf("uuid: UUID must be exactly 16 bytes long, got %d bytes", len(data))
+		return fmt.Errorf("uid: UID must be exactly 12 bytes long, got %d bytes", len(data))
 	}
 	copy(u[:], data)
 
@@ -126,7 +129,16 @@ func (u *UID) generate() {
 // FromString parse string
 func FromString(input string) (UID, error) {
 	u := UID{}
+	if len(input) != size {
+		return Nil, fmt.Errorf("uid: UID must be exactly 12 bytes long, got %d bytes", len(input))
+	}
 	err := u.UnmarshalText([]byte(strings.ToUpper(input)))
+	return u, err
+}
+
+func FromBytes(data []byte) (UID, error) {
+	u := UID{}
+	err := u.UnmarshalBinary(data)
 	return u, err
 }
 
