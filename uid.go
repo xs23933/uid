@@ -129,8 +129,11 @@ func (u *UID) generate() {
 // FromString parse string
 func FromString(input string) (UID, error) {
 	u := UID{}
-	if len(input) != size {
-		return Nil, fmt.Errorf("uid: UID must be exactly 12 bytes long, got %d bytes", len(input))
+	if len(input) != 12 {
+		return Nil, fmt.Errorf("not uid string")
+	}
+	if !strings.Contains(digits, input[:1]) || !strings.Contains(digits, input[5:6]) || !strings.Contains(digits, input[11:]) {
+		return Nil, fmt.Errorf("uid string not found")
 	}
 	err := u.UnmarshalText([]byte(strings.ToUpper(input)))
 	return u, err
