@@ -87,6 +87,10 @@ func (u *UID) Scan(src interface{}) error {
 		*u = src
 		return nil
 	case []byte:
+		if strings.EqualFold(string(src), "null") || len(src) == 0 {
+			*u = Nil
+			return nil
+		}
 		if len(src) == size {
 			return u.UnmarshalBinary(src)
 		}
