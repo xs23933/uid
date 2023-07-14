@@ -43,6 +43,9 @@ func (u UID) String() string {
 
 // Value driver.sql
 func (u UID) Value() (driver.Value, error) {
+	if u.IsEmpty() {
+		return nil, nil
+	}
 	return u.String(), nil
 }
 
